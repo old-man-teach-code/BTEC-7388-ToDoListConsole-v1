@@ -8,6 +8,11 @@ namespace todolist_se08203
 {
     class Program
     {
+        static string[] todolist = new string[1000]; // Danh sách công việc (tối đa 1000 công việc)
+        static int n_tasks = 0; // Số lượng công việc trong todolist
+        static bool[] todolist_status = new bool[1000]; // Trạng thái của công việc (true: đã hoàn thành, false: chưa hoàn thành)
+        static double[] todolist_hour = new double[1000]; // Thời gian ước tính cho mỗi công việc (theo giờ)
+        static int[] todolist_type = new int[1000]; // Loại công việc [WebApp / AI engineer / House cleaning]
         static int chooseTaskType() // Validate việc nhập lựa chọn đúng
         {
             bool isCorrectChoice = false;
@@ -69,13 +74,16 @@ namespace todolist_se08203
             }
         }
 
-        static void printToDoList(int n_tasks, string[] todolist, bool[] todolist_status, double[] todolis_hour, int[] todolist_type)
+        static void printToDoList()
         {
             Console.WriteLine("----------------Current To do list------------------");
             for (int i = 0; i < n_tasks; i++)
             {
-                Console.WriteLine("Task no{0}: {1} - estimate {2} - Type: {3} - state: {4}", i + 1, todolist[i], todolis_hour[i], getTaskTypeName(todolist_type[i]),
-                    todolist_status[i] ? " Done" : " Not done");
+                Console.WriteLine("Task no{0}: {1} - estimate {2} - Type: {3} - state: {4} --> Cost: {5}", i + 1, todolist[i], todolist_hour[i], 
+                    getTaskTypeName(todolist_type[i]),
+                    todolist_status[i] ? " Done" : " Not done",
+                    getTaskCost(todolist_type[i], todolist_hour[i])
+                    );
                 // Toán tử 3 ngôi cấu trúc:
                 // [Ngôi 1 - giá trị true/false] ? [Ngôi 2 - Giá trị nếu ngôi 1 đúng] : [Ngôi 3 - Giá trị nếu ngôi 2 sai]
             }
@@ -110,34 +118,76 @@ namespace todolist_se08203
             return choice;
         }
 
-        static void Main(string[] args)
+        static void menu()
         {
-            string[] todolist = new string[1000]; // Danh sách công việc (tối đa 1000 công việc)
-            int n_tasks = 0; // Số lượng công việc trong todolist
-            bool[] todolist_status = new bool[1000]; // Trạng thái của công việc (true: đã hoàn thành, false: chưa hoàn thành)
-            double[] todolist_hour = new double[1000]; // Thời gian ước tính cho mỗi công việc (theo giờ)
-            int[] todolist_type = new int[1000]; // Loại công việc [WebApp / AI engineer / House cleaning]
-            int choice = 1; // trạng thái ban đầu  = 1 -> nhập 
+            bool isCorrectChoice = false;
+            int choice = 0;
+            while (!isCorrectChoice)
+            {
+                try
+                {
+                    Console.WriteLine("Choose your action: ");
+                    Console.WriteLine("1. Input task");
+                    Console.WriteLine("2. Read tasks");
+                    Console.WriteLine("Your action is: ");
+                    choice = Convert.ToInt32(Console.ReadLine());
+                    switch (choice)
+                    {
+                        case 1:
+                            Console.WriteLine("Input task");
+                            isCorrectChoice = true;
+                            break;
+                        case 2:
+                            Console.WriteLine("Read tasks");
+                            isCorrectChoice = true;
+                            break;
+                        default:
+                            Console.WriteLine("Wrong input");
+                            isCorrectChoice = false;
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    isCorrectChoice = false;
+                }
 
+            }
+        }
+
+        static void createToDoList()
+        {
+            int choice = 1; // trạng thái ban đầu  = 1 -> nhập 
             while (choice == 1)
             {
-                // TODO: Tăng biến n_tasks lên 1 đơn vị (vừa nhập thêm 1 task)
-                n_tasks++;
-                // TODO: Nhập công việc vào todolist
-                Console.Write("Input the task no{0}: ", n_tasks);
-                todolist[n_tasks - 1] = Console.ReadLine();
-                // TODO: Nhập time estimate công việc vào todolist_hour
-                Console.Write("Input estimate hour of the task no{0}: ", n_tasks);
-                todolist_hour[n_tasks - 1] = Convert.ToDouble(Console.ReadLine());
-                // TODO: Nhập loại công việc
-                todolist_type[n_tasks - 1] = chooseTaskType();
-                // TODO: Nhập trạng thái của công việc (hoàn thành hay chưa) vào todolist_status (mặc định là chưa)
-                todolist_status[n_tasks - 1] = false;
-                // TODO: Hỏi người dùng có muốn nhập tiếp hay không và đổi trạng thái của choice
-                
-                choice = inputChoice();
+                try
+                {
+                    // TODO: Tăng biến n_tasks lên 1 đơn vị (vừa nhập thêm 1 task)
+                    n_tasks++;
+                    // TODO: Nhập công việc vào todolist
+                    Console.Write("Input the task no{0}: ", n_tasks);
+                    todolist[n_tasks - 1] = Console.ReadLine();
+                    // TODO: Nhập time estimate công việc vào todolist_hour
+                    Console.Write("Input estimate hour of the task no{0}: ", n_tasks);
+                    todolist_hour[n_tasks - 1] = Convert.ToDouble(Console.ReadLine());
+                    // TODO: Nhập loại công việc
+                    todolist_type[n_tasks - 1] = chooseTaskType();
+                    // TODO: Nhập trạng thái của công việc (hoàn thành hay chưa) vào todolist_status (mặc định là chưa)
+                    todolist_status[n_tasks - 1] = false;
+                    // TODO: Hỏi người dùng có muốn nhập tiếp hay không và đổi trạng thái của choice
+
+                    choice = inputChoice();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Existed Error: " + ex.Message);
+                    choice = 0;
+                }
             }
-            printToDoList(n_tasks, todolist, todolist_status, todolist_hour, todolist_type); // Gọi hàm hiển thị danh sách
+        }
+
+        static void updateAllTaskStatus()
+        {
             Console.WriteLine("----------------Update To do list------------------");
             for (int i = 0; i < n_tasks; i++)
             {
@@ -153,9 +203,14 @@ namespace todolist_se08203
                     todolist_status[i] = false; // Không cần thiết, vì mặc định là false
                 }
             }
-            printToDoList(n_tasks, todolist, todolist_status, todolist_hour, todolist_type);
+        }
 
-
+        static void Main(string[] args)
+        {
+            createToDoList();
+            printToDoList(); // Gọi hàm hiển thị danh sách
+            updateAllTaskStatus();
+            printToDoList();
         }
     }
 }
