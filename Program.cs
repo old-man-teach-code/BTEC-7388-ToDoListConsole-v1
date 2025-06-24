@@ -118,43 +118,6 @@ namespace todolist_se08203
             return choice;
         }
 
-        static void menu()
-        {
-            bool isCorrectChoice = false;
-            int choice = 0;
-            while (!isCorrectChoice)
-            {
-                try
-                {
-                    Console.WriteLine("Choose your action: ");
-                    Console.WriteLine("1. Input task");
-                    Console.WriteLine("2. Read tasks");
-                    Console.WriteLine("Your action is: ");
-                    choice = Convert.ToInt32(Console.ReadLine());
-                    switch (choice)
-                    {
-                        case 1:
-                            Console.WriteLine("Input task");
-                            isCorrectChoice = true;
-                            break;
-                        case 2:
-                            Console.WriteLine("Read tasks");
-                            isCorrectChoice = true;
-                            break;
-                        default:
-                            Console.WriteLine("Wrong input");
-                            isCorrectChoice = false;
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    isCorrectChoice = false;
-                }
-
-            }
-        }
-
         static void createToDoList()
         {
             int choice = 1; // trạng thái ban đầu  = 1 -> nhập 
@@ -205,12 +168,95 @@ namespace todolist_se08203
             }
         }
 
+        static void menu()
+        {
+            int choice = 0;
+            while (true)
+            {
+                try
+                {
+                    Console.WriteLine("-----------------------------");
+                    Console.WriteLine("Choose your action: ");
+                    Console.WriteLine("0. End the program");
+                    Console.WriteLine("1. Input task");
+                    Console.WriteLine("2. Read tasks");
+                    Console.WriteLine("3. Update all tasks status");
+                    Console.WriteLine("4. Remove a task");
+                    Console.WriteLine("5. Update task content");
+                    Console.WriteLine("Your action is: ");
+                    choice = Convert.ToInt32(Console.ReadLine());
+                    switch (choice)
+                    {
+                        case 0:
+                            Console.WriteLine("Good bye");
+                            return;
+                        case 1:
+                            Console.WriteLine("Input task");
+                            createToDoList();
+                            break;
+                        case 2:
+                            Console.WriteLine("Read tasks");
+                            printToDoList();
+                            break;
+                        case 3:
+                            Console.WriteLine("update all tasks");
+                            updateAllTaskStatus();
+                            break;
+                        case 4:
+                            Console.WriteLine("remove a task");
+                            removeTask();
+                            break;
+                        case 5:
+                            updateTaskContent();
+                            break;
+                        default:
+                            Console.WriteLine("Wrong input");
+                            break;
+                    }
+                    Console.WriteLine("-----------------------------");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " +ex.Message);
+                }
+            }
+        }
+
+        static void updateTaskContent()
+        {
+            //TODO: code update nội dung 1 task được chọn
+        }
+
+        static void removeTask()
+        {      
+            if (n_tasks >= 1)
+            {
+                Console.WriteLine("Input the task number which you wanna remove:");
+                int choosenIndex = Convert.ToInt32(Console.ReadLine()) - 1;
+                for (int i = choosenIndex; i < (n_tasks - 1); i++)
+                {
+                    todolist[i] = todolist[i + 1];
+                    todolist_status[i] = todolist_status[i + 1];
+                    todolist_hour[i] = todolist_hour[i + 1];
+                    todolist_type[i] = todolist_type[i + 1];
+                }
+
+                todolist[n_tasks - 1] = null;
+                todolist_status[n_tasks - 1] = new bool();
+                todolist_hour[n_tasks - 1] = new int();
+                todolist_type[n_tasks - 1] = new int();
+                n_tasks--;
+            }
+            else
+            {
+                Console.WriteLine("There is no task");
+            }
+
+        }
+
         static void Main(string[] args)
         {
-            createToDoList();
-            printToDoList(); // Gọi hàm hiển thị danh sách
-            updateAllTaskStatus();
-            printToDoList();
+            menu();
         }
     }
 }
