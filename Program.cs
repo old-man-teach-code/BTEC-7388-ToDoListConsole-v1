@@ -209,6 +209,9 @@ namespace todolist_se08203
                         case 5:
                             updateTaskContent();
                             break;
+                        case 6:
+                            findTaskbyPrice();
+                            break;
                         default:
                             Console.WriteLine("Wrong input");
                             break;
@@ -225,6 +228,10 @@ namespace todolist_se08203
         static void updateTaskContent()
         {
             //TODO: code update nội dung 1 task được chọn
+        }
+        static void findTaskbyPrice()
+        {
+            //TODO: Tìm kiếm task theo giá tiền nhập vào
         }
 
         static void removeTask()
